@@ -38,4 +38,44 @@ function jc_custom_widgets_init()
     'before_title' => '<h5 class="widgettitle card-title">',
     'after_title' => '</h5>',
   ));
+
+  register_sidebar(array(
+    'name' => __('Footer-1', 'jc_custom'),
+    'id' => 'footer-1',
+    'description' => __('Add the first footer widget here.', 'jc_custom'),
+    'before_widget' => '<div class="col-lg-3 mb-4">',
+    'after_widget' => '</div>',
+    'before_title' => '<h5 class="text-white mb-4">',
+    'after_title' => '</h5>',
+  ));
+
+  register_sidebar(array(
+    'name' => __('Footer-2', 'jc_custom'),
+    'id' => 'footer-2',
+    'description' => __('Add the second footer widget here.', 'jc_custom'),
+    'before_widget' => '<div class="col-lg-5 mb-4">',
+    'after_widget' => '</div>',
+    'before_title' => '<h5 class="text-white mb-4">',
+    'after_title' => '</h5>',
+  ));
+
+  register_sidebar(array(
+    'name' => __('Footer-3', 'jc_custom'),
+    'id' => 'footer-3',
+    'description' => __('Add the third footer widget here.', 'jc_custom'),
+    'before_widget' => '<div class="col-lg-4 mb-4">',
+    'after_widget' => '</div>',
+    'before_title' => '<h5 class="text-white mb-4">',
+    'after_title' => '</h5>',
+  ));
+
+  register_sidebar(array(
+    'name' => __('Socket', 'jc_custom'),
+    'id' => 'soket',
+    'description' => __('Add socket widget here.', 'jc_custom'),
+    'before_widget' => '<div class="col-12 text-white">',
+    'after_widget' => '</div>',
+    'before_title' => '<h5 class="text-white mb-4">',
+    'after_title' => '</h5>',
+  ));
 }

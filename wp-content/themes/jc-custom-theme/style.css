@@ -171,3 +171,11 @@ a {
 .card-raised {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
 }
+
+
+/* How to Contact */
+
+.contactContent {
+  background: rgba(0, 0, 0, .4);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.36);
+}
