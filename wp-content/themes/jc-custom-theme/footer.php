@@ -1,6 +1,6 @@
 <!-- FOOTER ======================================= -->
 
-<section id="footer" class="text-white" style="background: #222">
+<section id="footer" class="text-white d-none d-md-block" style="background: #222">
   <div class="container p-5">
     <div class="row">
 

@@ -179,3 +179,28 @@ a {
   background: rgba(0, 0, 0, .4);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.36);
 }
+
+/* Front Page */
+
+.page-box {
+  position: relative;
+}
+
+.box-icon {
+  position: absolute;
+  width: 40%;
+  bottom: 0;
+  right: 0;
+  opacity: 0.3;
+  filter: alpha(opacity=30); /* This is for Windows Explorer * or earlier */
+}
+
+.box-bg, .box-item {
+  position: relative;
+  border: 1px solid #ddd;
+  transition: 0.5s;
+}
+
+.box-bg:hover, .box-item:hover {
+  box-shadow: 0 0 8px rgba(0, 0, 0, .18), 0 8px 16px rgba(0, 0, 0, .36);
+}
