@@ -1,10 +1,17 @@
 <?php
 
+// Bootstrap4 Navwalker
+require get_template_directory() . '/inc/bs4navwalker.php';
+
 // Theme Setup
 function jc_custom_setup()
 {
   add_theme_support('post-thumbnails');
+  add_image_size('front-slide', 1600, 1000, true);
   add_theme_support('post-formats', array('aside', 'link', 'status', 'video', 'image'));
+  register_nav_menus(array(
+    'primary' => __('Primary Menu')
+  ));
 }
 
 add_action('after_setup_theme', 'jc_custom_setup');
@@ -21,6 +28,7 @@ function jc_custom_scripts()
   wp_enqueue_script('jQuery-js', '//code.jquery.com/jquery-3.3.1.slim.min.js', array(), '3.3.1', true);
   wp_enqueue_script('popper-js', '//cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js', array(), '1.14.7', true);
   wp_enqueue_script('bootstrap-js', '//cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js', array(), '4.3.1', true);
+  wp_enqueue_script('main-js', get_template_directory_uri() . '/js/main.js', array(), '1.0.0', true);
 }
 
 add_action('wp_enqueue_scripts', 'jc_custom_scripts');
