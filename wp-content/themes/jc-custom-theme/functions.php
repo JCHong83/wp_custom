@@ -48,6 +48,16 @@ function jc_custom_widgets_init()
   ));
 
   register_sidebar(array(
+    'name' => __('Page Sidebar', 'jc_custom'),
+    'id' => 'sidebar-2',
+    'description' => __('Widgets in this area will be shown on all posts and pages.', 'jc_custom'),
+    'before_widget' => '<div id="%1$s" class="card card-body bg-light mb-4 card-raised">',
+    'after_widget' => '</div>',
+    'before_title' => '<h5 class="widgettitle card-title">',
+    'after_title' => '</h5>',
+  ));
+
+  register_sidebar(array(
     'name' => __('Footer-1', 'jc_custom'),
     'id' => 'footer-1',
     'description' => __('Add the first footer widget here.', 'jc_custom'),
@@ -87,3 +97,21 @@ function jc_custom_widgets_init()
     'after_title' => '</h5>',
   ));
 }
+add_action('widgets_init', 'jc_custom_widgets_init');
+
+
+/**
+ * Customize the title for the home page, if one is not set.
+ *
+ * @param string $title The original title.
+ * @return string The title to use.
+ */
+function jc_custom_title_for_home($title)
+{
+  if (empty($title) && (is_home() || is_front_page())) {
+    $title = __('Home', 'textdomain') . ' | ' . get_bloginfo('description');
+  }
+  return $title;
+}
+
+add_filter('wp_title', 'jc_custom_title_for_home');

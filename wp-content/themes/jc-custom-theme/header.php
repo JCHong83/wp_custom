@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="<?php bloginfo('charset'); ?>" />
-  <title><?php wp_title(); ?></title>
+  <title><?php wp_title(''); ?></title>
   <link rel="profile" href="http://gmpg.org/xfn/11" />
 
   <!-- Required meta tags -->
@@ -22,7 +22,7 @@
 
   <!-- NAVBAR ======================================= -->
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mb-4">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
     <div class="container">
       <a class="navbar-brand" href="<?php echo esc_url(home_url('/')) ?>">
         <img src="<?php bloginfo('stylesheet_directory'); ?>/img/logo01.png" alt="Logo" class="rounded-circle img-fluid" width="40px" height="40px">

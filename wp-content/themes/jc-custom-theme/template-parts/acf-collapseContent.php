@@ -5,7 +5,7 @@ $coll_body = get_field('coll_body');
 
 <!-- TOGGLE COLLAPSE ======================================================= -->
 
-<div class="collapse-idea">
+<div class="collapse-idea" class="mt-4">
   <div class="container">
     <div class="collapse" id="collapseIdea">
       <div class="card card-body bg-info text-white">
