@@ -164,7 +164,7 @@
 								
 				if(parseInt(value[fn_reply])>0){
 					reply_class		= ' cmt-reply-item';
-					reply_sign		= '<img class="list-i-secret" alt="secret" src="<?php echo MBW_SKIN_URL;?>images/icon_reply_head.gif" /> ';
+					reply_sign		= '<img class="list-i-reply" alt="reply" src="<?php echo MBW_SKIN_URL;?>images/icon_reply_head.gif" /> ';
 				} else {
 					reply_class		= "";
 					reply_sign		= "";

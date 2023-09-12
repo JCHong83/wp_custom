@@ -102,7 +102,7 @@ if(!function_exists('mbw_get_htmlpurify')){
 		$config->set('HTML.MaxImgLength', null);
 		$config->set('CSS.MaxImgLength', null);
 		$config->set('Core.Encoding', mbw_get_option("encoding"));
-		$config->set('Cache.SerializerPath', MBW_UPLOAD_PATH);
+		$config->set('Cache.SerializerPath', rtrim(MBW_UPLOAD_PATH,'/'));
 
 		$def = $config->getHTMLDefinition(true);
 		$def->addAttribute('iframe', 'allowfullscreen', 'Bool');

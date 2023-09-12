@@ -3,9 +3,9 @@ Contributors: kitae-park
 Donate link: http://www.mangboard.com/donate/
 Tags: board,mangboard,bbs,bulletin,gallery,image,calendar,seo,plugin,shortcode,social,korea,korean,kingkong,kboard,망보드,워드프레스게시판,한국형게시판,게시판
 Requires at least: 4.0.0
-Tested up to: 6.2.1
+Tested up to: 6.3
 Requires PHP: 5.5.1
-Stable tag: 1.7.6
+Stable tag: 2.1.9
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,16 @@ The plugin is available in English, Japanese(日本語), Chinese(中国語) and 
 안정화 작업 및 보안 기능 수정
 
 == Changelog ==
+
+= 2.1.9 =
+* 일부 워드프레스 환경에서 자동생성되는 P 태그가 자바스크립트 내부에 들어가지 않도록 2.1.8 버전에서 추가된 코드 제거
+  => 파일 업로드 플러그인을 사용하는 환경에서 글쓰기 오류가 발생하는 문제가 발견되어 추가된 코드 제거
+
+= 2.1.8 =
+* 일부 테마(Twenty Twenty-Two,Twenty Twenty-Three)에서 게시판 검색 기능이 동작하지 않는 문제 수정
+* 일부 워드프레스 환경에서 자동생성되는 P 태그가 자바스크립트 내부에 들어가지 않도록 코드 수정
+* 최적화 및 안정성 개선을 위한 코드 수정
+* minor bug 수정
 
 = 2.1.7 =
 * 일부 페이지 빌더(Oxygen Builder)에서 게시물 등록이 안되는 문제 수정

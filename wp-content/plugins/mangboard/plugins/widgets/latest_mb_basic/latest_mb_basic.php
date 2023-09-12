@@ -62,6 +62,9 @@ if(!function_exists('mbw_get_latest_mb_basic')){
 		}
 		if(empty($data['list_size'])) $list_size			= "5";
         else $list_size			= mbw_value_filter($data['list_size'],"int");
+		if(!empty($data['list_page'])) $list_page	= intval($data['list_page'])-1;
+		else $list_page		= 0;
+		if($list_page<0) $list_page	= 0;
 		if(empty($data['title'])) $title			= "";
         else $title			= $data['title'];
 		if(empty($data['link_type'])) $link_type			= "view";
@@ -247,10 +250,10 @@ if(!function_exists('mbw_get_latest_mb_basic')){
 			}
 		}
 		$latest_list		= array();
-		if(!empty($search_field) && $search_text!="") $where_data[] = $mdb->prepare($search_field."=%s",$search_text);
+		if(!empty($search_field) && $search_text!="") $where_data[] = $mdb->prepare($search_field." like %s","%".$search_text."%");
 		if(!empty($where_data)) $where_query				= " WHERE ".implode(" and ",$where_data);
 		if(strlen($name)>3){			
-			$latest_list		= $mdb->get_results($mdb->prepare("SELECT * FROM ".$table_name.$where_query." order by ".mbw_value_filter($order_by)." ".mbw_value_filter($order_type)." limit 0,%d",$list_size), ARRAY_A);
+			$latest_list		= $mdb->get_results("SELECT * FROM ".$table_name.$where_query." order by ".mbw_value_filter($order_by,"name")." ".mbw_value_filter($order_type,"name")." limit ".mbw_value_filter($list_page,"int").",".mbw_value_filter($list_size,"int"), ARRAY_A);
 		}
 		if(has_filter('mf_widget_latest_items')) $latest_list			= apply_filters("mf_widget_latest_items", $latest_list, $data, $where_query, $latest_permalink, $widget_name);
 
@@ -294,7 +297,9 @@ if(!function_exists('mbw_get_latest_mb_basic')){
 						}
 						if(has_filter('mf_widget_item_title')) $item_title			= apply_filters("mf_widget_item_title", $item_title, $data, $latest_item, $widget_name);
 						$latest_html	.= $item_title;
-					$latest_html	.= '</a>';
+					if($link_type!="false"){
+						$latest_html	.= '</a>';
+					}
 
 				$latest_html	.= '</td></tr>';
 			}

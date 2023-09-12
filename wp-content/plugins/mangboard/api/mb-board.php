@@ -25,9 +25,10 @@ mbw_check_api_required($api_fields,$send_data);
 do_action('mbw_board_api_header');
 
 $file_check				= false;
-if(mbw_get_param("mode")=="write")
+$upload_check			= false;
+if(mbw_get_param("mode")=="write"){
 	$upload_check		= mbw_check_api_file("board");
-
+}
 
 if($mstore->get_result_data("state")=="error"){
 	echo mbw_data_encode($mstore->result_data);	

@@ -206,6 +206,9 @@ function moveURL(url, param, loading){
 			url		= url.replace(/(category)(\d{1})=&/g,'');
 		}
 	}
+	if(url.indexOf('&#038;')!=-1){
+		url		= url.replace(/&#038;/g,'&');
+	}
 	var match_count = (url.match(/page_id=/g) || []).length;
 	if(match_count>0) {
 		url		= url.replace(/page_id=&/g,'');
@@ -248,6 +251,9 @@ function moveURL(url, param, loading){
 }
 function openWindow(url,name,option){
 	var objPopup;
+	if(url.indexOf('&#038;')!=-1){
+		url		= url.replace(/&#038;/g,'&');
+	}
 	if(typeof(mb_hybrid_app)==='undefined' || mb_hybrid_app==""){
 		if(typeof(option)==='undefined') option	= "width=600,height=450,toolbar=no,location=no,status=no,menubar=no,top=200,left=300,scrollbars=no,resizable=no";
 		if(typeof(mb_options)!=='undefined' && typeof(mb_options["device_type"])!=='undefined' && mb_options["device_type"]=="mobile"){

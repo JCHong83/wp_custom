@@ -26,6 +26,10 @@ get_template_part('template-parts/acf', 'pageBanner');
 
         </div> <!-- card-columns -->
 
+        <div class="my-5 mx-auto">
+          <?php echo paginate_links(); ?>
+        </div>
+
       </div> <!-- row -->
     </div> <!-- container -->
   </div> <!-- Section Content -->

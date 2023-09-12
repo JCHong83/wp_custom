@@ -675,8 +675,11 @@ if(!function_exists('mbw_init_options')){
 				$mb_comment_table_name		= mbw_get_board_table_name($board_name,"comment");
 				if(!$mstore->table_exists($mb_comment_table_name)) mbw_error_message("MSG_EXIST_ERROR2", array($mb_comment_table_name,"Table"),"1301");
 			}
-
-			$select_fields		= $mb_fields["select_board"];
+			if(!empty($mb_fields["select_board"])){
+				$select_fields		= $mb_fields["select_board"];
+			}else{
+				$select_fields		= $mb_fields["board"];
+			}
 			
 			//공지사항 검색 설정
 			/*
@@ -819,7 +822,11 @@ if(!function_exists('mbw_set_category_params')){
 			//카테고리 검색 설정
 			$category_fields		= mbw_get_category_fields();
 			$category_index		= 1;
-			$select_fields			= $mb_fields["select_board"];
+			if(!empty($mb_fields["select_board"])){
+				$select_fields		= $mb_fields["select_board"];
+			}else{
+				$select_fields		= $mb_fields["board"];
+			}
 			foreach($category_fields as $field){
 				if(!empty($select_fields[$field]) && mbw_get_param("category".$category_index)!=""){
 					mbw_set_board_where(array("field"=>$field, "value"=>mbw_htmlspecialchars(mbw_get_param("category".$category_index)), "sign"=>"="));

@@ -16,7 +16,7 @@ if(!empty($_REQUEST["mb_locale"])){
 	if(!empty($_SERVER["REQUEST_URI"])) $mb_uri	= strtolower($_SERVER["REQUEST_URI"]);
 	if(strpos($mb_uri, '/en/')===0) $mb_locale	= 'en_US';
 	else if(strpos($mb_uri, '/ko/')===0 || strpos($mb_uri, '/kr/')===0) $mb_locale	= 'ko_KR';
-	else if(strpos($mb_uri, '/zh/')===0 || strpos($mb_uri, '/ch/')===0) $mb_locale= 'zh_CN';
+	else if(strpos($mb_uri, '/zh/')===0 || strpos($mb_uri, '/ch/')===0 || strpos($mb_uri, '/cn/')===0) $mb_locale= 'zh_CN';
 	else if(strpos($mb_uri, '/ja/')===0 || strpos($mb_uri, '/jp/')===0) $mb_locale	= 'ja';
 	else if(is_admin() && get_option("mb_admin_locale")!="") $mb_locale	= get_option("mb_admin_locale");
 	else if(get_option("mb_locale")!="") $mb_locale	= get_option("mb_locale");

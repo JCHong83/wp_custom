@@ -39,6 +39,7 @@
           <hr>
 
       <?php endwhile;
+        echo paginate_links();
       else : _e('Sorry, no posts found.');
       endif;
       ?>

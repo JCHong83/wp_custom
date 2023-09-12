@@ -18,15 +18,14 @@ jQuery( document ).ready(function() {
 		popup_html		= popup_html+'</div>';
 		popup_html		= popup_html+'<div class="mb-pop pop-alert" id="mb_pop_alert">';
 			popup_html		= popup_html+'<div class="pop-alert-head" id="mb_pop_alert_head"></div>';
-			popup_html		= popup_html+'<div class="pop-alert-body" id="mb_pop_alert_body"></div>';			
+			popup_html		= popup_html+'<div class="pop-alert-body" id="mb_pop_alert_body"></div>';
 		popup_html		= popup_html+'</div>';
 		
 	popup_html		= popup_html+'</div>';
 	popup_html		= popup_html+'</div>';
 
      jQuery("body").append(popup_html);
-}); 
-
+});
 
 var confirmCallbackSend;
 var confirmCallbackCancel;
@@ -146,9 +145,11 @@ function showConfirmPopup(message,data,send,cancel){
 function showAlertPopup(response,send){
 	if(!response || typeof(response)==='undefined') return;
 
-	var code						= "";
+	var code					= "";
 	var message				= "";
 	var target_name			= "";
+	var mode					= "";
+	var board_action		= "";
 	
 	if(typeof(send)==='undefined') alertCallbackSend			= null;
 	else alertCallbackSend			= send;
@@ -156,16 +157,17 @@ function showAlertPopup(response,send){
 	if(typeof(response.code)!=='undefined') code				= response.code;
 	if(typeof(response.message)!=='undefined') message		= response.message;
 	if(typeof(response.target_name)!=='undefined') target_name		= response.target_name;
+	if(typeof(response.mode)!=='undefined') mode				= response.mode;
+	if(typeof(response.board_action)!=='undefined') board_action				= response.board_action;
 	if(message=="") return;
 	if(code=="1103"){
 		showConfirmPopup(message, {}, function(){moveURL(mb_urls["login"]);});
 		return;
 	}
-
 	var pop_head		= '<div class="pop-title" id="mb_pop_alert_text"><p class="pop-title-head">Message</p><p class="pop-title-message">'+message+'</p></div>';
 	var pop_body		= '';
 	pop_body			= pop_body+'<div class="btn-box-center">';
-	pop_body			= pop_body+'<a href="javascript:;"  id="mb_pop_alert_ok" onclick="showAlertCallback(\''+code+'\',\''+	target_name+'\')" class="btn btn-default btn-ok"><span>'+mb_languages["btn_ok"]+'</span></a>';
+	pop_body			= pop_body+'<a href="javascript:;"  id="mb_pop_alert_ok" onclick="showAlertCallback(\''+code+'\',\''+target_name+'\',\''+mode+'\',\''+board_action+'\');" class="btn btn-default btn-ok"><span>'+mb_languages["btn_ok"]+'</span></a>';
 	pop_body			= pop_body+'</div>';
 	showPopupBox("Alert",pop_head,pop_body);
 }
@@ -311,14 +313,10 @@ function sendUserMenuHandler(response, state){
 		showAlertPopup(response);
 	}
 }
-
-
-
 function hideInfoBox() {
 	jQuery("#mb_pop_info").hide();
 	jQuery("#mb_pop_info").removeClass("mb-ani-pop-fadein");
 }
-
 function hidePopupBox() {	
 	confirmCallbackSend		= null;
 	jQuery(".mb-input-focus").removeClass("mb-input-focus");
@@ -335,13 +333,11 @@ function hidePopupBox() {
 	}
 	popupMode			= "popup";
 }
-
-function showAlertCallback(code,target_name) {
-	hidePopupAlert(code,target_name);
+function showAlertCallback(code,target_name,mode,board_action){	
+	hidePopupAlert(code,target_name,mode,board_action);
 	sendAlertCallbackData();	
 }
-
-function hidePopupAlert(code,target_name) {
+function hidePopupAlert(code,target_name,mode,board_action) {
 	if(popupMode=="modal") return;
 	if(typeof(code)!=='undefined' && code!=='undefined' && code!=''){
 		if(confirmCallbackSend) jQuery("#mb_pop_confirm").show();		
@@ -373,7 +369,11 @@ function hidePopupAlert(code,target_name) {
 							}
 						}else{
 							if(jQuery("[name='"+target_name+"']").filter(':visible').length>0){
-								target		= jQuery("[name='"+target_name+"']").filter(':visible').first();
+								if(typeof(mode)!=='undefined' && mode=='comment' && typeof(board_action)!=='undefined' && (board_action=='reply' || board_action=='modify')){
+									target		= jQuery(".cmt-reply-box [name='"+target_name+"']").filter(':visible').first();
+								}else{
+									target		= jQuery("[name='"+target_name+"']").filter(':visible').first();
+								}
 							}else if(jQuery(target_name).filter(':visible').length>0){
 								target		= jQuery(target_name).filter(':visible').first();
 							}

@@ -22,6 +22,7 @@ mbw_check_api_permission($api_fields,$send_data);
 mbw_check_api_required($api_fields,$send_data);
 do_action('mbw_comment_api_header');
 
+$upload_check			= false;
 if(mbw_get_param("board_action")=="write" || mbw_get_param("board_action")=="modify" || mbw_get_param("board_action")=="reply"){
 	$upload_check		= mbw_check_api_file("board");
 }

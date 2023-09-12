@@ -246,3 +246,7 @@ a {
     position: fixed;
   }
 }
+
+.dropdown-menu a {
+  font-size: 0.9rem;
+}

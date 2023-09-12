@@ -285,6 +285,11 @@ body.mb-mobile div.mb-error-message-box span,body.mb-mobile2 div.mb-error-messag
 .mb-board .mb-style1 .table.table-prev-next .pn_user_name,.mb-board .mb-style1 .table.table-prev-next .pn_reg_date{text-align:center;}
 .mb-board .mb-style1 a.btn-user-picture, .mb-board .mb-style1 a.btn-user-info{display:inline;}
 .mb-board .mb-style1 .file-download{display: block;padding:1px 0 1px 0px;position:relative;margin-right: 0px !important;}
+.mb-board .mb-style1 img.user-i-level, .mb-board .mb-style1 img.list-i-new {max-width:9px;width:9px;min-width:9px;}
+.mb-board .mb-style1 img.list-i-secret{max-width:13px;width:auto;min-width:9px;}
+.mb-board .mb-style1 img.list-i-file{max-width:11px;width:11px;min-width:11px;}
+.mb-board .mb-style1 img.list-i-img{max-width:12px;width:12px;min-width:12px;}
+.mb-board .mb-style1 img.list-i-reply{max-width:13px;width:13px;min-width:13px;}
 
 .mb-board select,.mb-board input[type="text"],
 .mb-board input[type="password"],.mb-board input[type="datetime"],.mb-board input[type="datetime-local"],.mb-board input[type="date"],.mb-board input[type="month"],.mb-board input[type="color"],

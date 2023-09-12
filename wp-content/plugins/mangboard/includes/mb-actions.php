@@ -737,6 +737,9 @@ if(!function_exists('mbw_filter_widget_latest_items')){
 
 				if(empty($data['list_size'])) $list_size			= 5;
 				else $list_size			= intval($data['list_size']);
+				if(!empty($data['list_page'])) $list_page	= intval($data['list_page'])-1;
+				else $list_page		= 0;
+				if($list_page<0) $list_page	= 0;
 
 				if(empty($data['category1'])) $category1			= "";
 				else $category1			= $data['category1'];
@@ -786,7 +789,7 @@ if(!function_exists('mbw_filter_widget_latest_items')){
 						}else{
 							$order_type		= "asc";
 						}
-						$latest_items		= $mdb->get_results("SELECT * FROM " . mbw_get_table_name($item) . $w_query." order by ".$order_by." ".$order_type." limit 0,".$list_size, ARRAY_A);
+						$latest_items		= $mdb->get_results("SELECT * FROM " . mbw_get_table_name($item) . $w_query." order by ".$order_by." ".$order_type." limit ".$list_page.",".$list_size, ARRAY_A);
 
 						foreach($latest_items as $key=>$value){
 							$latest_items[$key]['board_name']		= $item;

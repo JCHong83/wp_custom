@@ -268,187 +268,130 @@ if(!function_exists('mbw_check_api_required')){
 	function mbw_check_api_required($fields,$send_data){
 		mbw_add_trace("mbw_check_api_required");
 		global $mstore,$mdb,$mb_board_table_name,$mb_admin_tables;
-		$api_fields				= $fields;		
-		if(mbw_get_model(mbw_get_param("mode")."_".mbw_get_param("board_action"))!=""){
-			$model_name				= mbw_get_param("mode")."_".mbw_get_param("board_action");			
-		}else{
-			$model_name				= mbw_get_param("mode");
+		$api_fields				= $fields;
+		$model_name			= mbw_get_param("mode")."_".mbw_get_param("board_action");
+		if($model_name=="comment_modify"){
+			$model_name	= "comment_write";
 		}
-
-		$model							= mbw_get_model($model_name);
+		$model					= mbw_get_model($model_name);
+		if(empty($model)){
+			$model_name			= mbw_get_param("mode");
+			$model					= mbw_get_model($model_name);
+		}
 		if(!empty($model)){
 			$model_data				= mbw_json_decode($model);
 			$mb_user_level			= mbw_get_user("fn_user_level");
 			foreach($model_data as $data){
-				//필수 입력 검사
-
-				if(isset($data["required"])){					
-
-					if(!empty($data["required_field"]))
-						$data["field"]		= $data["required_field"];
-
-					if(!empty($data["required_action"]) && $data["required_action"]!=mbw_get_param("board_action")){
-						//required_action 설정이 있고, board_action과 일치하지 않을 경우 예외처리						
-					}else if(!empty($data["type"]) && strpos($data["type"],'file')===0){		//파일 타입에 required 설정했을 경우
-						$name		= str_replace("fn_", "", $data["field"]);
-						if(isset($_REQUEST[$name]) && empty($_FILES[$name])){
-							if(isset($data["required_error"])){
-								$error_message		= mbw_get_message($data["required_error"]);
-							}else{
-								$error_message		= "MSG_FILE_EMPTY_ERROR2";
-							}
-							mbw_error_message($error_message, $data["name"],"1201",str_replace("fn_", "", $data["field"]));
-							break;
+				if(mbw_check_item($data)){
+					//필수 입력 검사
+					if(isset($data["required"])){
+						if(!empty($data["required_field"])){
+							$data["field"]		= $data["required_field"];
 						}
+						if(!empty($data["required_action"]) && $data["required_action"]!=mbw_get_param("board_action")){
+							//required_action 설정이 있고, board_action과 일치하지 않을 경우 예외처리
+						}else if(!empty($data["type"]) && strpos($data["type"],'file')===0){		//파일 타입에 required 설정했을 경우
+							$name		= str_replace("fn_", "", $data["field"]);
+							if(isset($_REQUEST[$name]) && empty($_FILES[$name])){
+								if(isset($data["required_error"])){
+									$error_message		= mbw_get_message($data["required_error"]);
+								}else{
+									$error_message		= "MSG_FILE_EMPTY_ERROR2";
+								}
+								mbw_error_message($error_message, $data["name"],"1201",str_replace("fn_", "", $data["field"]));
+								break;
+							}
 
-					}else if(!isset($api_fields[$data["field"]])){		//field가 정의되어 있지 않을 경우 에러 출력
-						mbw_error_message("%s field error", $api_fields[$data["field"]],"1302");
-						break;
-					}else if(!isset($send_data[$api_fields[$data["field"]]]) || $send_data[$api_fields[$data["field"]]]==""){		//field 값이 비어있을 경우 에러 출력			
-						$check_required		= true;
-						//회원 정보 수정시 비밀번호가 없으면 예외처리
-						if($data["field"]=="fn_passwd" && mbw_get_param("board_action")=="modify"){
-							$mb_user_pid		= mbw_get_user("fn_pid");
+						}else if(!isset($api_fields[$data["field"]])){		//field가 정의되어 있지 않을 경우 에러 출력
+							mbw_error_message("%s field error", $api_fields[$data["field"]],"1302");
+							break;
+						}else if(!isset($send_data[$api_fields[$data["field"]]]) || $send_data[$api_fields[$data["field"]]]==""){		//field 값이 비어있을 경우 에러 출력			
+							$check_required		= true;
+							//회원 정보 수정시 비밀번호가 없으면 예외처리
+							if($data["field"]=="fn_passwd" && mbw_get_param("board_action")=="modify"){
+								$mb_user_pid		= mbw_get_user("fn_pid");
 
-							if($mb_board_table_name==$mb_admin_tables["users"]){								
-								$modify_level		= intval(mbw_get_board_option("fn_modify_level"));
-								if(empty($modify_level)) $modify_level	= mbw_get_option("admin_level");
-								if($mb_user_pid==mbw_get_param("board_pid") || $mb_user_level>=$modify_level){	//본인의 회원정보 수정 or 관리자에 의한 회원정보 수정 허용
+								if($mb_board_table_name==$mb_admin_tables["users"]){								
+									$modify_level		= intval(mbw_get_board_option("fn_modify_level"));
+									if(empty($modify_level)) $modify_level	= mbw_get_option("admin_level");
+									if($mb_user_pid==mbw_get_param("board_pid") || $mb_user_level>=$modify_level){	//본인의 회원정보 수정 or 관리자에 의한 회원정보 수정 허용
+										$check_required		= false;
+									}
+								//로그인 상태에서는 게시물 수정시 패스워드 필드 필수 예외처리
+								}else if(mbw_is_login()){
 									$check_required		= false;
 								}
-							//로그인 상태에서는 게시물 수정시 패스워드 필드 필수 예외처리
-							}else if(mbw_is_login()){
-								$check_required		= false;
+							//게시판 정보 수정시 이름 데이타 예외 처리
+							}else if($data["field"]=="fn_user_name" && mbw_get_param("board_action")=="modify"){
+								$modify_level							= intval(mbw_get_board_option("fn_modify_level"));
+								if(empty($modify_level)) $modify_level	= mbw_get_option("admin_level");
+								if($mb_user_level>=$modify_level){		//관리자에 의한 게시물 수정 허용
+									$check_required		= false;
+								}
 							}
-						//게시판 정보 수정시 이름 데이타 예외 처리
-						}else if($data["field"]=="fn_user_name" && mbw_get_param("board_action")=="modify"){
-							$modify_level							= intval(mbw_get_board_option("fn_modify_level"));
-							if(empty($modify_level)) $modify_level	= mbw_get_option("admin_level");
-							if($mb_user_level>=$modify_level){		//관리자에 의한 게시물 수정 허용
-								$check_required		= false;
-							}
-						}
-						if($check_required){
-							if(isset($data["required_error"])){
-								$error_message		= mbw_get_message($data["required_error"]);
-							}else{
-								$error_message		= "MSG_FIELD_EMPTY_ERROR1";
-							}
-							mbw_error_message($error_message, $data["name"],"1201",str_replace("fn_", "", $data["field"]));
-							break;						
-						}
-					}else{					
-						
-						//Unique 상태 검사
-						if(mbw_get_param("mode")!="comment" && isset($data["unique"])){
-							$where_data		= array();
-							$where_data[]		= array("field"=>$api_fields[$data["field"]],"value"=>$send_data[$api_fields[$data["field"]]]);
-							if(mbw_get_param("board_action")=="modify"){		// modify 일 경우 수정글 값은 제외하고 체크
-								$where_data[]		= array("field"=>"fn_pid","sign"=>"!=","value"=>mbw_get_param("board_pid"));							
-							}
-							$unique_check	= intval($mdb->get_var(mbw_get_add_query(array("column"=>"count(*)"),$where_data)));
-							if($unique_check>0){
-								if(isset($data["unique_error"])){
-									$error_message		= mbw_get_message($data["unique_error"]);
+							if($check_required){
+								if(isset($data["required_error"])){
+									$error_message		= mbw_get_message($data["required_error"]);
 								}else{
-									$error_message		= "MSG_UNIQUE_ERROR";
+									$error_message		= "MSG_FIELD_EMPTY_ERROR1";
 								}
-								mbw_error_message($error_message, array($send_data[$api_fields[$data["field"]]],$data["name"]),"1205",str_replace("fn_", "", $data["field"]));
-								break;
-							}						
-						}
-					}
-				}
-				//입력 패턴 검사
-				if(!empty($data["pattern"]) && $send_data[$api_fields[$data["field"]]]!=""){
-
-					if(!empty($data["pattern_action"]) && $data["pattern_action"]!=mbw_get_param("board_action")){
-						//pattern_action 설정이 있고, board_action과 일치하지 않을 경우 예외처리
-					}else{
-						$pattern_text		= $send_data[$api_fields[$data["field"]]];
-						if(isset($data["field"]) && $data["field"]=="fn_passwd") $pattern_text		= $_REQUEST["passwd"];
-						if(!mbw_check_pattern($data["pattern"],$pattern_text)){
-							if(isset($data["pattern_error"])){
-								$error_message		= mbw_get_message($data["pattern_error"]);
-							}else{
-								$error_message		= "MSG_PATTERN_ERROR";
+								mbw_error_message($error_message, $data["name"],"1201",str_replace("fn_", "", $data["field"]));
+								break;						
 							}
-							mbw_error_message($error_message, $data["name"],"1203",str_replace("fn_", "", $data["field"]));
-							break;
+						}else{					
+							
+							//Unique 상태 검사
+							if(mbw_get_param("mode")!="comment" && isset($data["unique"])){
+								$where_data		= array();
+								$where_data[]		= array("field"=>$api_fields[$data["field"]],"value"=>$send_data[$api_fields[$data["field"]]]);
+								if(mbw_get_param("board_action")=="modify"){		// modify 일 경우 수정글 값은 제외하고 체크
+									$where_data[]		= array("field"=>"fn_pid","sign"=>"!=","value"=>mbw_get_param("board_pid"));							
+								}
+								$unique_check	= intval($mdb->get_var(mbw_get_add_query(array("column"=>"count(*)"),$where_data)));
+								if($unique_check>0){
+									if(isset($data["unique_error"])){
+										$error_message		= mbw_get_message($data["unique_error"]);
+									}else{
+										$error_message		= "MSG_UNIQUE_ERROR";
+									}
+									mbw_error_message($error_message, array($send_data[$api_fields[$data["field"]]],$data["name"]),"1205",str_replace("fn_", "", $data["field"]));
+									break;
+								}						
+							}
 						}
 					}
-				}
-
-				if(!empty($data["filter"]) && $data["filter"]!="false" && $mb_user_level<mbw_get_option("admin_level")){
-					$filter		= mbw_check_filter($data["filter"], $send_data[$api_fields[$data["field"]]]);
-					if(!empty($filter)){
-						if(isset($data["filter_error"])){
-							$error_message		= '<div>"'.$filter.'"</div>'.mbw_get_message($data["filter_error"]);
+					//입력 패턴 검사
+					if(!empty($data["pattern"]) && !empty($api_fields[$data["field"]]) && $send_data[$api_fields[$data["field"]]]!=""){
+						if(!empty($data["pattern_action"]) && $data["pattern_action"]!=mbw_get_param("board_action")){
+							//pattern_action 설정이 있고, board_action과 일치하지 않을 경우 예외처리
 						}else{
-							$error_message		= "MSG_FILTER_ERROR";
+							$pattern_text		= $send_data[$api_fields[$data["field"]]];
+							if(isset($data["field"]) && $data["field"]=="fn_passwd") $pattern_text		= $_REQUEST["passwd"];
+							if(!mbw_check_pattern($data["pattern"],$pattern_text)){
+								if(isset($data["pattern_error"])){
+									$error_message		= mbw_get_message($data["pattern_error"]);
+								}else{
+									$error_message		= "MSG_PATTERN_ERROR";
+								}
+								mbw_error_message($error_message, $data["name"],"1203",str_replace("fn_", "", $data["field"]));
+								break;
+							}
 						}
-						mbw_error_message($error_message, $filter,"1204",str_replace("fn_", "", $data["field"]));
-						break;
 					}
-				}
 
-			}
-		}else if(mbw_get_param("mode")=="list"){
-			$error_check		= false;
-			foreach($model_data as $data){
-				if(isset($data["required"]) || (!empty($data["filter"]) && $data["filter"]!="false") ){
-
-					if(!isset($api_fields[$data["field"]])){
-						mbw_error_message("%s field error", $api_fields[$data["field"]],"1302");
-						break;
-					}else if(is_array($send_data[$api_fields[$data["field"]]])){
-						$check_data			= $send_data[$api_fields[$data["field"]]];
-						$count					= count($check_data);
-
-						for($i=0;$i<$count;$i++){
-
-							if(isset($data["required"])){
-								if(!isset($check_data[$i]) || $check_data[$i]==""){
-									if(isset($data["required_error"])){
-										$error_message		= mbw_get_message($data["required_error"]);
-									}else{
-										$error_message		= "MSG_FIELD_EMPTY_ERROR1";
-									}
-									mbw_error_message($error_message, $data["name"],"1201");
-									$error_check		= true;
-									break;
-								}else if(!empty($data["pattern"])){
-									if(!mbw_check_pattern($data["pattern"], $check_data[$i])){
-										if(isset($data["pattern_error"])){
-											$error_message		= mbw_get_message($data["pattern_error"]);
-										}else{
-											$error_message		= "MSG_PATTERN_ERROR";
-										}
-										mbw_error_message($error_message, $data["name"],"1203");
-										$error_check		= true;
-										break;
-									}
-								}
+					if(!empty($data["filter"]) && $data["filter"]!="false" && $mb_user_level<mbw_get_option("admin_level")){
+						$filter		= mbw_check_filter($data["filter"], $send_data[$api_fields[$data["field"]]]);
+						if(!empty($filter)){
+							if(isset($data["filter_error"])){
+								$error_message		= '<div>"'.$filter.'"</div>'.mbw_get_message($data["filter_error"]);
+							}else{
+								$error_message		= "MSG_FILTER_ERROR";
 							}
-							if(!empty($data["filter"]) && $data["filter"]!="false" && $mb_user_level<mbw_get_option("admin_level")){
-								$filter		= mbw_check_filter($data["filter"], $send_data[$api_fields[$data["field"]]]);
-								if(!empty($filter)){
-									if(isset($data["filter_error"])){
-										$error_message		= '<div>"'.$filter.'"</div>'.mbw_get_message($data["filter_error"]);
-									}else{
-										$error_message		= "MSG_FILTER_ERROR";
-									}
-									mbw_error_message($error_message, $filter,"1204");
-									$error_check		= true;
-									break;
-								}
-							}
-						}
-						if($error_check){							
+							mbw_error_message($error_message, $filter,"1204",str_replace("fn_", "", $data["field"]));
 							break;
 						}
-					}					
-				}				
+					}
+				}
 			}
 		}
 	}

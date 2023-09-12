@@ -210,10 +210,13 @@ Class MStore
 		if(!empty($this->category_fields)){
 			return $this->category_fields;
 		}else{
-			global $mb_fields;
-			$select_fields		= $mb_fields["select_board"];
+			global $mb_fields;			
+			if(!empty($mb_fields["select_board"])){
+				$select_fields		= $mb_fields["select_board"];
+			}else{
+				$select_fields		= $mb_fields["board"];
+			}
 			$fields				= array();
-
 			if(!empty($select_fields["fn_category1"])){
 				$fields[]		= "fn_category1";
 			}
